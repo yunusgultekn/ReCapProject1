@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constans;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -18,49 +20,51 @@ namespace Business.Concrete
 
         }
 
-        public void Add(Car car)
+        public IResult Add(Car car)
         {
             if(car.DailyPrice>0 && car.Description.Length>2)
             {
                 _carDal.Add(car);
-                Console.WriteLine("Ekleme Başarılı");
+                return new SuccesResult(Messages.ObjectAdded);
             }
             else
             {
-                Console.WriteLine("Kurallara Uygun Davranın");
+                return new ErrorResult(Messages.ObjectInvalid);
             }
             
         }
 
-        public void Delete(Car car)
+        public IResult Delete(Car car)
         {
             _carDal.Delete(car);
+            return new SuccesResult(Messages.ObjectDeleted);
         }
 
-        public List<Car> GetAll()
+        public IDataResult<List<Car>> GetAll()
         {
-            return _carDal.GetAll();
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.ObjectListed);
         }
 
-        public Car GetById(int id)
+        public IDataResult<Car> GetById(int id)
         {
-            return _carDal.Get(p=> p.CarId == id);
+            return new SuccessDataResult<Car>(_carDal.Get(p=> p.CarId == id));
         }
 
-        public List<CarDetailsDto> GetCarrDetails()
+        public IDataResult<List<CarDetailsDto>> GetCarrDetails()
         {
-            return _carDal.GetCarDetails();
+            return new SuccessDataResult<List<CarDetailsDto>>(_carDal.GetCarDetails(),Messages.ObjectListed);
         }
 
-        public void Update(Car car)
+        public IResult Update(Car car)
         {
             if (car.DailyPrice > 0 && car.Description.Length > 2)
             {
                 _carDal.Update(car);
+                return new SuccesResult(Messages.ObjectUpdated);
             }
             else
             {
-                Console.WriteLine("Kurallara Uygun Davranın");
+                return new ErrorResult(Messages.ObjectInvalid);
             }
             
         }
